@@ -2725,9 +2725,11 @@ void initServer(void) {
     server.get_ack_from_slaves = 0;
     server.clients_paused = 0;
     server.system_memory_size = zmalloc_get_memory_size();
-
+    /** 创建全局变量 */
     createSharedObjects();
+    /** 调整持有文件句柄限制 */
     adjustOpenFilesLimit();
+    /** 创建时间循环 */
     server.el = aeCreateEventLoop(server.maxclients+CONFIG_FDSET_INCR);
     if (server.el == NULL) {
         serverLog(LL_WARNING,
@@ -2735,6 +2737,7 @@ void initServer(void) {
             strerror(errno));
         exit(1);
     }
+    /** 创建数据库接口-Hash结构 */
     server.db = zmalloc(sizeof(redisDb)*server.dbnum);
 
     /* Open the TCP listening socket for the user commands. */
